@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  db:
+    image: postgres:9.4
+    restart: always
+    tty: true
+    volumes:
+      - .pgdata:/var/lib/postgresql/data
+    environment: 
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=break_files
+    ports: 
+      - "5412:5432"

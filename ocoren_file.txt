@@ -1,0 +1,20 @@
+0 [HEAD 1]000DOMINALOG EXPRESS LOG INT LTDA     LCR COMERCIO DE MOVEIS LTDA        2308211630OCO230816300                         
+1 [HEAD 2]340OCORR230816300                                                                                                       
+2 [HEAD 3]34118247063000960DOMINALOG EXPRESS LOG INT LTDA                                                                         
+3 [body 1]42090819470020011  001313770024062021161100CT-e autorizado com 8 volumes e 271 Kg. Destino: BA/CACULE. Previsao d      
+4 [body 2]42090819470020011  001313771230062021141100Saida da unidade SERRA em 30/06/21, 14:11h. Previsao de chegada na uni      
+5 [body 3]42090819470020011  001313771203072021110700Saida da unidade VITORIA DA CONQUISTA em 03/07/21, 11:07h. Previsao de      
+6 [body 4]42090819470020011  001313779803072021110700Chegada na unidade VITORIA DA CONQUISTA em 03/07/21, 11:07h.                
+7 [body 5]42090819470020011  001313775807072021130400Saida para entrega na cidade CACULE.                                        
+8 [body 6]42090819470020011  001313770108072021225003ENTREGUE - INFORMADA ATRAVES DA CHAVE 32210618247063000960570060002490      
+9 [body 7]6690819470020011  001318830001072021094700CT-e autorizado com 1 volume e 16 Kg. Destino: RS/PASSO FUNDO. Previsa      
+10 [body 8]3090819470020011  001318831203072021211400Saida da unidade SERRA em 03/07/21, 21:14h. Previsao de chegada na uni      
+11 [body 9]2090819470020011  001318831206072021191600Saida da unidade PINHAIS em 06/07/21, 19:16h. Previsao de chegada na u      
+12 [body 10]2090819470020011  001318831209072021214800Saida da unidade CANOAS em 09/07/21, 21:48h. Previsao de chegada na un      
+13 [body 11]2090819470020011  001318839812072021090000Chegada na unidade PASSO FUNDO em 12/07/21, 09:00h.                         
+14 [body 12]2090819470020011  001318835812072021143700Saida para entrega na cidade PASSO FUNDO.                                   
+15 [body 13]2090819470020011  001318830612072021184500ENDEREACO NAO LOCALIZADO E TEL NAO CONFERE EM 12/07/21 18:45H               
+16 [body 14]2090819470020011  001318835814072021091500Saida para entrega na cidade PASSO FUNDO.                                   
+17 [body 15]2090819470020011  001318830614072021160900NINGUA M EM CASA. EM 14/07/21 16:09H                                        
+18 [body 16]2090819470020011  0013188319140720211710001A TENTATIVA DE ENTREGA OCORREU EM 14/07/21.                                
+19 [body 17]2090819470020011  001318835816072021102900Saida para entrega na cidade PASSO FUNDO.                                  
