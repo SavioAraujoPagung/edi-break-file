@@ -12,15 +12,17 @@ const HEAD_SIZE = 3
 const EXTENSION_FILE = ".txt"
 const FOLDER_NAME = "NEW_OCOREN/"
 const PERMISSION_FOLDER = 0700
+const AMOUNT_LINE_BY_OCOREN = 2
+const FIST_ID_FILE_OCOREN = 1
+const FILE_NAME = "OCOREN_"
 
 func main() {
-
-	var amount int
-	fmt.Print("Amount file to create: ")
-	fmt.Scanln(&amount)
 	var nameFileOcoren string
-	fmt.Print("Name file: ")
+	fmt.Print("NOME DO ARQUIVO QUE SERÁ QUEBRADO: ")
 	fmt.Scanln(&nameFileOcoren)
+	var amount int
+	fmt.Print("QUANTOS ARQUIVOS QUEBRAR: ")
+	fmt.Scanln(&amount)
 	fileOcoren, err := ioutil.ReadFile(nameFileOcoren + EXTENSION_FILE)
 	checkErr(err)
 	ocoren := string(fileOcoren)
@@ -39,18 +41,19 @@ func getRestOccurrences(amoutFile int, amountOccurrences int) (restOccurrences i
 }
 
 func getLineFinal(amountLineWrite int, lineInit int) (lineFinal int) {
-	return amountLineWrite + lineInit
+	lineFinal = amountLineWrite + lineInit
+	return lineFinal
 }
 
 func getAmountLineWrite(amountOccurrencesFile int, idNewFile int, restOccurrences int) (amountLineWrite int) {
 	if idNewFile <= restOccurrences {
-		return amountOccurrencesFile + 1
+		return (amountOccurrencesFile + 1) * AMOUNT_LINE_BY_OCOREN
 	}
-	return amountOccurrencesFile
+	return amountOccurrencesFile * AMOUNT_LINE_BY_OCOREN
 }
 
 func getLineInit(idNewFile int, amountOccurrencesFile int, afterlineInit int) (lineInit int) {
-	if idNewFile == 1 {
+	if idNewFile == FIST_ID_FILE_OCOREN {
 		return HEAD_SIZE
 	}
 	lineInit = afterlineInit + amountOccurrencesFile
@@ -80,22 +83,28 @@ func createFile(fileName string) (newOcoren *os.File) {
 	return newOcoren
 }
 
+func getAmountOccurrences(originalOcorenSplit []string) (amountOccurrences int) {
+	amountOccurrences = (len(originalOcorenSplit) - HEAD_SIZE) / AMOUNT_LINE_BY_OCOREN
+	return amountOccurrences
+}
+
 func makeOcoren(amout int, originalOcorenSplit []string) {
 	createFolder()
-	amountOccurrences := len(originalOcorenSplit) - HEAD_SIZE
+	amountOccurrences := getAmountOccurrences(originalOcorenSplit)
 	amountOccurrencesFile := getAmountOccurrencesFile(amout, amountOccurrences)
 	restOccurrences := getRestOccurrences(amout, amountOccurrences)
-	var lineInit int = 1
-	amountLineWrite := getAmountLineWrite(amountOccurrencesFile, 1, restOccurrences)
+	lineInit := 1
+	amountLineWrite := getAmountLineWrite(amountOccurrencesFile, FIST_ID_FILE_OCOREN, restOccurrences)
 	for idNewFile := 1; idNewFile <= amout; idNewFile++ {
 		idNewFileStr := strconv.Itoa(idNewFile)
-		newOcoren := createFile(FOLDER_NAME + "ocoren_" + idNewFileStr + EXTENSION_FILE)
+		newOcoren := createFile(FOLDER_NAME + FILE_NAME + idNewFileStr + EXTENSION_FILE)
 		lineInit = getLineInit(idNewFile, amountLineWrite, lineInit)
 		amountLineWrite = getAmountLineWrite(amountOccurrencesFile, idNewFile, restOccurrences)
 		lineFinal := getLineFinal(amountLineWrite, lineInit)
 		writeHead(newOcoren, originalOcorenSplit)
 		writeBody(lineInit, newOcoren, originalOcorenSplit, lineFinal)
 	}
+
 }
 
 func checkErr(err error) {
