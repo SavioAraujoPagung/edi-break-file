@@ -3,14 +3,11 @@ package domain
 import (
 	"errors"
 	"log"
-	"time"
 )
 
 type OcorenFile struct {
-	Edi
-	AmountOccurrences int `gorm: "type: varchar(255)"`
-	AmountFile        int `gorm: "type: varchar(255)"`
-	CreateAt          time.Timer
+	Occurrence        []int
+	AmountOccurrences int `gorm: "type: int"`
 }
 
 func (ocoren *OcorenFile) Prepare() error {
@@ -22,6 +19,11 @@ func (ocoren *OcorenFile) Prepare() error {
 	return err
 }
 
+func (ocoren *OcorenFile) setOccurrence(fileOcoren []string) error {
+	//TODO: mapear as ocorrências
+	return nil
+}
+
 func (ocoren *OcorenFile) validateAmountOccurrences() error {
 	if ocoren.AmountOccurrences < 0 {
 		return errors.New("The amount occurrences is invalidade")
@@ -30,7 +32,7 @@ func (ocoren *OcorenFile) validateAmountOccurrences() error {
 }
 
 func (ocoren *OcorenFile) validateAmountFile() error {
-	if ocoren.AmountFile < 0 {
+	if ocoren.AmountOccurrences < 0 {
 		return errors.New("The amount file is invalidade")
 	}
 	return nil
@@ -41,3 +43,5 @@ func ckeckErr(err error) {
 		log.Fatalf(err.Error())
 	}
 }
+
+/**/

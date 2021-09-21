@@ -7,6 +7,7 @@ import (
 	"github.com/SavioAraujoPagung/edi-break-file/domain"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pg"
 )
 
 func ConnectDB() *gorm.DB {
@@ -21,8 +22,7 @@ func ConnectDB() *gorm.DB {
 		log.Fatalf("Error open connecting to database: %v", err)
 		panic(err)
 	}
-	//defer db.Close()
+
 	db.AutoMigrate(&domain.OcorenFile{})
-	db.AutoMigrate(&domain.Edi{})
 	return db
 }

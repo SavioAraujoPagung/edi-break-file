@@ -17,6 +17,7 @@ const FIST_ID_FILE_OCOREN = 1
 const FILE_NAME = "OCOREN_"
 
 func main() {
+
 	var nameFileOcoren string
 	fmt.Print("NOME DO ARQUIVO QUE SERÁ QUEBRADO: ")
 	fmt.Scanln(&nameFileOcoren)
