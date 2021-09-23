@@ -1,5 +1,6 @@
 package utils
 
+/*
 import (
 	"log"
 	"os"
@@ -26,3 +27,4 @@ func ConnectDB() *gorm.DB {
 	db.AutoMigrate(&domain.OcorenFile{})
 	return db
 }
+*/

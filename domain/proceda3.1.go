@@ -1,6 +1,8 @@
 package domain
 
 import (
+	"fmt"
+	"io/ioutil"
 	"time"
 )
 
@@ -63,20 +65,25 @@ type Occurrence struct {
 type OccurrenceProceda struct {
 	HeadFile
 	HeadFileTwo
+	ContentFile string
 }
 
-func (proceda OccurrenceProceda) OpenFile() (fileOcoren []byte, err error) {
-	return nil, nil
+func (proceda *OccurrenceProceda) OpenFile(fileName string) {
+	fileOcoren, err := ioutil.ReadFile(fileName)
+	if err != nil {
+		fmt.Println("ERRO CARAI")
+	}
+	proceda.ContentFile = string(fileOcoren)
 }
-func (proceda OccurrenceProceda) ReadHead(fileOcoren []string) (err error) {
+func (proceda *OccurrenceProceda) ReadHead(fileOcoren []string) (err error) {
 	return nil
 }
-func (proceda OccurrenceProceda) CarrierDatas(fileOcoren []string) (err error) {
+func (proceda *OccurrenceProceda) CarrierDatas(fileOcoren []string) (err error) {
 	return nil
 }
-func (proceda OccurrenceProceda) DispacherDatas(fileOcoren []string) (err error) {
+func (proceda *OccurrenceProceda) DispacherDatas(fileOcoren []string) (err error) {
 	return nil
 }
-func (proceda OccurrenceProceda) ReadOccurrences(fileOcoren []string) (err error) {
+func (proceda *OccurrenceProceda) ReadOccurrences(fileOcoren []string) (err error) {
 	return nil
 }
