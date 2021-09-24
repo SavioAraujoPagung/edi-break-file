@@ -32,6 +32,8 @@ type Proceda struct {
 
 func create(writer http.ResponseWriter, request *http.Request) {
 	var fileProceda domain.OccurrenceProceda
+
+	fmt.Println(fileProceda)
 	//ABRE O ARQUIVO E ADICIONA A UMA VARIAABVEL TODO O CONTEUDO
 	//TODO: PAREI AQUI
 }

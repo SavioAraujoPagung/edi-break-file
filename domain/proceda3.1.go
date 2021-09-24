@@ -8,82 +8,91 @@ import (
 
 //Cabeçalho do arquivo - "000"
 type HeadFile struct {
-	RecordIdentifier int
-	CarrierName      string
-	ShipperName      string
-	CreatedAt        time.Time
-	Filler           string
+	RecordIdentifier int       `json: "identificador"`
+	CarrierName      string    `json: "transportadora"`
+	ShipperName      string    `json: "embarcador"`
+	CreatedAt        time.Time `json: "data_criacao"`
+	Filler           string    `json: _`
 }
 
 //Cabeçalho dois - "340"
 type HeadFileTwo struct {
-	RecordIdentifier int
-	FileIdentifier   string
-	Filler           string
+	RecordIdentifier int    `json: "identificador"`
+	FileIdentifier   string `json: "identificador_arquivo"`
+	Filler           string `json: _`
 }
 
 //Informação de transportadora - "341"
 type Carrier struct {
-	RecordIdentifier int
-	RegisteredNumber string
-	Name             string
-	Filler           string
+	RecordIdentifier    int    `json: "identificador"`
+	RegisteredNumber    string `json: "cnpj_transportadora"`
+	Name                string `json: "nome_transportadora"`
+	Filler              string `json: "_"`
+	TransportKnowledges []TransportKnowledge
 }
 
 //Conhecimento de transporte CT-e - "343"
 type TransportKnowledge struct {
-	RegisteredNumber   string
-	ContractingCarrier string
-	Series             int
-	Number             int
+	RecordIdentifier   int    `json: "identificador"`
+	RegisteredNumber   string `json: "cgc_contratante"`
+	ContractingCarrier string `json: "transportadora_contratante"`
+	Series             int    `json: "cte_serie"`
+	Number             int    `json: "cte_numero"`
+	Occurrences        []Occurrence
 }
 
 //Nota fiscal - NF-e
 type Invoice struct {
-	RegisteredNumber string
-	Series           int
-	Number           int
+	RegisteredNumber string `json: "nfe_cnpj_emitente"`
+	Series           int    `json: "nfe_serie"`
+	Number           int    `json: "nfe_numero"`
 }
 
 //Codigo da ocorrencia - vide tabela de ocorrencias Proceda-3.1
 type OccurrenceCode struct {
-	Code        int
-	Description string
+	Code        int    `json: "codigo_ocorrencia"`
+	Description string `json: "nome_ocorrencia"`
 }
 
 //Informações sobre uma ocorrencia - "342"
 type Occurrence struct {
-	RecordIdentifier int
-	Invoice          Invoice
-	OccurrenceCode   OccurrenceCode
-	OccurrenceDate   time.Time
-	ObservationCode  int
-	Text             string
-	Filler           string
+	Invoice          []Invoice
+	OccurrenceCode   []OccurrenceCode
+	RecordIdentifier int       `json: "identificador"`
+	OccurrenceDate   time.Time `json: "data_ocorencia"`
+	ObservationCode  int       `json: "observacao_entrega"`
+	Text             string    `json: "texto"`
+	Filler           string    `json: _`
 }
 
+//PROCEDA-3.1
 type OccurrenceProceda struct {
 	HeadFile
 	HeadFileTwo
+	Carrier
+	//todo o conteudo do arquivo
 	ContentFile string
 }
 
-func (proceda *OccurrenceProceda) OpenFile(fileName string) {
+//read all content file - OCOREN PROCEDA 3.1
+func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
 	fileOcoren, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		fmt.Println("ERRO CARAI")
 	}
 	proceda.ContentFile = string(fileOcoren)
-}
-func (proceda *OccurrenceProceda) ReadHead(fileOcoren []string) (err error) {
+
 	return nil
 }
-func (proceda *OccurrenceProceda) CarrierDatas(fileOcoren []string) (err error) {
+func (proceda *OccurrenceProceda) readHead(fileOcoren []string) (err error) {
 	return nil
 }
-func (proceda *OccurrenceProceda) DispacherDatas(fileOcoren []string) (err error) {
+func (proceda *OccurrenceProceda) carrierDatas(fileOcoren []string) (err error) {
 	return nil
 }
-func (proceda *OccurrenceProceda) ReadOccurrences(fileOcoren []string) (err error) {
+func (proceda *OccurrenceProceda) dispacherDatas(fileOcoren []string) (err error) {
+	return nil
+}
+func (proceda *OccurrenceProceda) readOccurrences(fileOcoren []string) (err error) {
 	return nil
 }

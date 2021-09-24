@@ -17,6 +17,7 @@ func (ocoren *OcorenFile) Prepare() error {
 	err = ocoren.validateAmountFile()
 	ckeckErr(err)
 	return err
+
 }
 
 func (ocoren *OcorenFile) setOccurrence(fileOcoren []string) error {
