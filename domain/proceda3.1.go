@@ -72,27 +72,45 @@ type OccurrenceProceda struct {
 	Carrier
 	//todo o conteudo do arquivo
 	ContentFile string
+	FileName    string
 }
 
 //read all content file - OCOREN PROCEDA 3.1
 func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
 	fileOcoren, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		fmt.Println("ERRO CARAI")
-	}
+
 	proceda.ContentFile = string(fileOcoren)
+	err = proceda.readHead(proceda.ContentFile)
+	checkError(err, "Err to read head")
+	err = proceda.carrierDatas(proceda.ContentFile)
+	checkError(err, "Err to read carrier Datas")
+	err = proceda.dispacherDatas(proceda.ContentFile)
+	checkError(err, "Err to read dispacher Datas")
+	err = proceda.readOccurrences(proceda.ContentFile)
+	checkError(err, "Err to read Occurrences")
 
 	return nil
 }
-func (proceda *OccurrenceProceda) readHead(fileOcoren []string) (err error) {
+func (proceda *OccurrenceProceda) readHead(fileOcoren string) (err error) {
 	return nil
 }
-func (proceda *OccurrenceProceda) carrierDatas(fileOcoren []string) (err error) {
+func (proceda *OccurrenceProceda) carrierDatas(fileOcoren string) (err error) {
 	return nil
 }
-func (proceda *OccurrenceProceda) dispacherDatas(fileOcoren []string) (err error) {
+func (proceda *OccurrenceProceda) dispacherDatas(fileOcoren string) (err error) {
 	return nil
 }
-func (proceda *OccurrenceProceda) readOccurrences(fileOcoren []string) (err error) {
+func (proceda *OccurrenceProceda) readOccurrences(fileOcoren string) (err error) {
 	return nil
+}
+func checkError(err error, message string) {
+	if message == "" {
+		if err != nil {
+			fmt.Println("Erro ao fazer alguma coisa")
+		}
+		return
+	}
+	if err != nil {
+		fmt.Println(message)
+	}
 }

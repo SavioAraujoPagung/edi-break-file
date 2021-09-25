@@ -33,30 +33,27 @@ type Proceda struct {
 func create(writer http.ResponseWriter, request *http.Request) {
 	var fileProceda domain.OccurrenceProceda
 
-	fmt.Println(fileProceda)
-	//ABRE O ARQUIVO E ADICIONA A UMA VARIAABVEL TODO O CONTEUDO
-	//TODO: PAREI AQUI
-}
+	var file File
 
-func postTest(w http.ResponseWriter, request *http.Request) {
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
 		fmt.Println("Erro ao ler body")
 	}
 
-	var file File
 	err = json.Unmarshal(body, &file)
 	if err != nil {
 		fmt.Println("Erro no unmarshal")
 	}
+	fileProceda.FileName = file.Name
+	fmt.Println(fileProceda.FileName)
 
-	if file.Name == "" {
-		fmt.Println("Nome invalido")
-		return
+	err = fileProceda.ReadFile(file.Name)
+	if err != nil {
+		fmt.Println("Erro ao ler arquivo")
 	}
 
-	fmt.Println("file name é ", file.Name)
-
+	writer.Header().Set("Content=Type", "application/json")
+	json.NewEncoder(writer).Encode(file.Name)
 }
 
 func getProceda(w http.ResponseWriter, request *http.Request) {
