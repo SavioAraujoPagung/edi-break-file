@@ -45,8 +45,8 @@ func create(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println("Erro no unmarshal")
 	}
 	fileProceda.FileName = file.Name
-	fmt.Println(fileProceda.FileName)
 
+	//magica acontece
 	err = fileProceda.ReadFile(file.Name)
 	if err != nil {
 		fmt.Println("Erro ao ler arquivo")
