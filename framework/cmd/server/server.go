@@ -45,15 +45,13 @@ func create(writer http.ResponseWriter, request *http.Request) {
 		fmt.Println("Erro no unmarshal")
 	}
 	fileProceda.FileName = file.Name
-
 	//magica acontece
 	err = fileProceda.ReadFile(file.Name)
 	if err != nil {
 		fmt.Println("Erro ao ler arquivo")
 	}
-
 	writer.Header().Set("Content=Type", "application/json")
-	json.NewEncoder(writer).Encode(file.Name)
+	json.NewEncoder(writer).Encode(fileProceda)
 }
 
 func getProceda(w http.ResponseWriter, request *http.Request) {
