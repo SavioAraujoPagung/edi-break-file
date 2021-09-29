@@ -135,55 +135,69 @@ func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
 	return nil
 }
 
-//Cabecalho de intercambio ("000") e cabecalho do arquivo("340")
+const SENDER_NAME_INIT = 3
+const SENDER_NAME_END = 38
+
+const RECIPIENT_NAME_INIT = 38
+const RECIPIENT_NAME_END = 73
+
+const CREATED_AT_INIT = 0
+const CREATED_AT_END = 0
+
+//Cabecalho de intercambio ("000")
 func (proceda *OccurrenceProceda) readHead(originalOcorenSplitChar []string) (err error) {
 	proceda.HeadFileRecordIdentifier = RECORD_HEARD
-	proceda.SenderName = getSenderName(originalOcorenSplitChar)
-	proceda.RecipientName = getRecipientName(originalOcorenSplitChar)
-	proceda.CreatedAt = getCreatedAt(originalOcorenSplitChar)
-
+	proceda.SenderName = getInformation(originalOcorenSplitChar, SENDER_NAME_INIT, SENDER_NAME_END)
+	proceda.RecipientName = getInformation(originalOcorenSplitChar, RECIPIENT_NAME_INIT, RECIPIENT_NAME_END)
+	createdAt := getInformation(originalOcorenSplitChar, CREATED_AT_INIT, CREATED_AT_END)
+	layout := "2006-01-02T15:04:05.000Z"
+	proceda.CreatedAt, err = time.Parse(createdAt, layout)
+	checkError(err, "Error: time.Parse(createdAt, layout)")
 	return nil
 }
 
-func getSenderName(originalOcorenSplitChar []string) (senderName string) {
-	senderNameInit := 3
-	senderNameEnd := 38
-	for i := senderNameInit; i < senderNameEnd; i++ {
-		senderName = senderName + originalOcorenSplitChar[i]
-	}
-	return senderName
-}
-func getRecipientName(originalOcorenSplitChar []string) (recipientName string) {
-	recipientNameInit := 38
-	recipientNameEnd := 73
-	for i := recipientNameInit; i < recipientNameEnd; i++ {
-		recipientName = recipientName + originalOcorenSplitChar[i]
-	}
-	return recipientName
-}
-func getCreatedAt(originalOcorenSplitChar []string) (createdAt time.Time) {
-	return
-}
+const FILE_IDENTIFIER_INIT = 38
+const FILE_IDENTIFIER_END = 73
 
 //Cabecalho do arquivo("340")
 func (proceda *OccurrenceProceda) readHeadTwo(originalOcorenSplitChar []string) (err error) {
 	proceda.HeadFileTwoRecordIdentifier = RECORD_HEARD_TWO
-	proceda.FileIdentifier = getFileIdentifier(originalOcorenSplitChar)
+	proceda.FileIdentifier = getInformation(originalOcorenSplitChar, FILE_IDENTIFIER_INIT, FILE_IDENTIFIER_END)
 	return nil
-}
-
-func getFileIdentifier(originalOcorenSplitChar []string) (fileIdentifier string) {
-	fileIdentifierInit := 38
-	fileIdentifierEnd := 73
-	for i := fileIdentifierInit; i < fileIdentifierEnd; i++ {
-		fileIdentifier = fileIdentifier + originalOcorenSplitChar[i]
-	}
-	return fileIdentifier
 }
 
 //"341"
 func (proceda *OccurrenceProceda) carrierDatas(originalOcorenSplitChar []string) (err error) {
+	/*
+		type Carrier struct {
+			CarrierRecordIdentifier int    `json: "identificador"`
+			RegisteredNumber        string `json: "cnpj_transportadora"`
+			Name                    string `json: "nome_transportadora"`
+			Filler                  string `json: "-"`
+			TransportKnowledges     []TransportKnowledge
+		}
+	*/
+	proceda.CarrierRecordIdentifier = getRecordIdentifier(originalOcorenSplitChar)
+	proceda.RegisteredNumber = getRegisteredNumber(originalOcorenSplitChar)
+	proceda.Name = getName(originalOcorenSplitChar)
 	return nil
+}
+
+func getRegisteredNumber(originalOcorenSplitChar []string) (registeredNumber string) {
+	registeredNumberInit := 3
+	registeredNumberEnd := 13
+	for i := registeredNumberInit; i < registeredNumberEnd; i++ {
+		registeredNumber = registeredNumber + originalOcorenSplitChar[i]
+	}
+	return registeredNumber
+}
+func getName(originalOcorenSplitChar []string) (name string) {
+	nameInit := 3
+	nameEnd := 13
+	for i := nameInit; i < nameEnd; i++ {
+		name = name + originalOcorenSplitChar[i]
+	}
+	return name
 }
 
 //"343"
@@ -208,4 +222,11 @@ func getRecordIdentifier(originalOcorenSplitChar []string) (recordIdentifier int
 	recordIdentifier, err := strconv.Atoi(record)
 	checkError(err, "err: getRecordIdentifier")
 	return recordIdentifier
+}
+
+func getInformation(originalOcorenSplitChar []string, init int, end int) (information string) {
+	for i := init; i < end; i++ {
+		information = information + originalOcorenSplitChar[i]
+	}
+	return information
 }
