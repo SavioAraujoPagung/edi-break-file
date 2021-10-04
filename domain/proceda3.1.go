@@ -109,8 +109,6 @@ func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
 	for line := 0; line < len(originalOcorenSplitLine); line++ {
 		originalOcorenSplitChar := strings.Split(originalOcorenSplitLine[line], "")
 		recordIdentifier := getRecordIdentifier(originalOcorenSplitChar)
-		//fmt.Println("originalOcorenSplitChar = ", originalOcorenSplitChar[0], originalOcorenSplitChar[1], originalOcorenSplitChar[2])
-		//fmt.Println("line = ", line)
 		switch recordIdentifier {
 		case RECORD_HEARD:
 			err = proceda.readHead(originalOcorenSplitChar)
@@ -221,9 +219,7 @@ const FILLER_OCCURRENCE_END = 119
 
 //"342"
 func (proceda *OccurrenceProceda) readOccurrences(originalOcorenSplitChar []string, ctePosition int, ocorenPosition int) (err error) {
-	fmt.Println("dentro da função readOccurrences")
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].Invoice = getInvoice(originalOcorenSplitChar)
-	fmt.Println(proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].Invoice)
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceCode = getOccurrenceCode(originalOcorenSplitChar)
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceRecordIdentifier = getRecordIdentifier(originalOcorenSplitChar)
 	//TODO: TRATAR DATA E HORA
@@ -271,7 +267,6 @@ func checkError(err error, message string) {
 
 func getRecordIdentifier(originalOcorenSplitChar []string) (recordIdentifier int) {
 	record := originalOcorenSplitChar[0] + originalOcorenSplitChar[1] + originalOcorenSplitChar[2]
-	fmt.Println("record = ", record)
 	recordIdentifier, err := strconv.Atoi(record)
 	checkError(err, "err: getRecordIdentifier "+record)
 	return recordIdentifier
