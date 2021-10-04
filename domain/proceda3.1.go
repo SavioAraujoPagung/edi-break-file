@@ -35,29 +35,29 @@ type HeadFile struct {
 	SenderName               string    `json: "remetente"`
 	RecipientName            string    `json: "destinatario"`
 	CreatedAt                time.Time `json: "data_criacao"`
-	Filler                   string    `json: -`
+	FillerHeadFile           string    `json: -`
 }
 
 //Cabeçalho dois - "340"
 type HeadFileTwo struct {
 	HeadFileTwoRecordIdentifier int    `json: "identificador"`
 	FileIdentifier              string `json: "identificador_arquivo"`
-	Filler                      string `json: -`
+	FillerHeadFileTwo           string `json: -`
 }
 
 //Informação de transportadora - "341"
 type Carrier struct {
 	CarrierRecordIdentifier int    `json: "identificador"`
-	RegisteredNumber        string `json: "cnpj_transportadora"`
+	RegisteredNumberCarrier string `json: "cnpj_transportadora"`
 	Name                    string `json: "nome_transportadora"`
-	Filler                  string `json: "-"`
+	FillerCarrier           string `json: "-"`
 	TransportKnowledges     []TransportKnowledge
 }
 
 //Conhecimento de transporte CT-e - "343"
 type TransportKnowledge struct {
 	TransportKnowledgeRecordIdentifier int    `json: "identificador"`
-	RegisteredNumber                   string `json: "cgc_contratante"`
+	RegisteredNumberCte                string `json: "cgc_contratante"`
 	ContractingCarrier                 string `json: "transportadora_contratante"`
 	Series                             int    `json: "cte_serie"`
 	Number                             int    `json: "cte_numero"`
@@ -66,9 +66,9 @@ type TransportKnowledge struct {
 
 //Nota fiscal - NF-e
 type Invoice struct {
-	RegisteredNumber string `json: "nfe_cnpj_emitente"`
-	Series           int    `json: "nfe_serie"`
-	Number           int    `json: "nfe_numero"`
+	RegisteredNumberInvoice string `json: "nfe_cnpj_emitente"`
+	Series                  int    `json: "nfe_serie"`
+	Number                  int    `json: "nfe_numero"`
 }
 
 //Codigo da ocorrencia - vide tabela de ocorrencias Proceda-3.1
@@ -79,22 +79,23 @@ type OccurrenceCode struct {
 
 //Informações sobre uma ocorrencia - "342"
 type Occurrence struct {
-	Invoice                    []Invoice
-	OccurrenceCode             []OccurrenceCode
+	Invoice                    Invoice
+	OccurrenceCode             OccurrenceCode
 	OccurrenceRecordIdentifier int       `json: "identificador"`
 	OccurrenceDate             time.Time `json: "data_ocorencia"`
 	ObservationCode            int       `json: "observacao_entrega"`
 	Text                       string    `json: "texto"`
-	Filler                     string    `json: -`
+	FillerOccurrence           string    `json: -`
 }
 
 //PROCEDA-3.1
 type OccurrenceProceda struct {
 	FileName    string `json: "nome_do_arquivo"`
 	ContentFile string `json: -`
-	HeadFile
-	HeadFileTwo
-	Carrier
+	HeadFile           //000
+	HeadFileTwo        //340
+	Carrier            //341
+
 }
 
 //read all content file - OCOREN PROCEDA 3.1
@@ -108,6 +109,8 @@ func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
 	for line := 0; line < len(originalOcorenSplitLine); line++ {
 		originalOcorenSplitChar := strings.Split(originalOcorenSplitLine[line], "")
 		recordIdentifier := getRecordIdentifier(originalOcorenSplitChar)
+		//fmt.Println("originalOcorenSplitChar = ", originalOcorenSplitChar[0], originalOcorenSplitChar[1], originalOcorenSplitChar[2])
+		//fmt.Println("line = ", line)
 		switch recordIdentifier {
 		case RECORD_HEARD:
 			err = proceda.readHead(originalOcorenSplitChar)
@@ -119,18 +122,23 @@ func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
 			err = proceda.carrierDatas(originalOcorenSplitChar)
 			checkError(err, "Error: to read carrier Datas")
 		case RECORD_OCOREN:
-			err = proceda.readOccurrences(originalOcorenSplitChar)
+			err = proceda.readOccurrences(originalOcorenSplitChar, 0, 0)
 			checkError(err, "Error: to read Occurrences")
-		case RECORD_CTE:
-			err = proceda.dispacherDatas(originalOcorenSplitChar)
-			checkError(err, "Error: to read dispacher datas")
 		}
+
 	}
+
+	/*
+
+		case RECORD_CTE:
+			err = proceda.dispacherDatas(originalOcorenSplitChar, 1)
+			checkError(err, "Error: to read dispacher datas")
+	*/
 
 	//criar json cabeçalho
 
-	err = proceda.dispacherDatas(originalOcorenSplitLine)
-	checkError(err, "Error: to read dispacher Datas")
+	//err = proceda.dispacherDatas(originalOcorenSplitLine, 1)
+	//checkError(err, "Error: to read dispacher Datas")
 
 	return nil
 }
@@ -146,13 +154,13 @@ const CREATED_AT_END = 0
 
 //Cabecalho de intercambio ("000")
 func (proceda *OccurrenceProceda) readHead(originalOcorenSplitChar []string) (err error) {
-	proceda.HeadFileRecordIdentifier = RECORD_HEARD
+	proceda.HeadFileRecordIdentifier = getRecordIdentifier(originalOcorenSplitChar)
 	proceda.SenderName = getInformation(originalOcorenSplitChar, SENDER_NAME_INIT, SENDER_NAME_END)
 	proceda.RecipientName = getInformation(originalOcorenSplitChar, RECIPIENT_NAME_INIT, RECIPIENT_NAME_END)
-	createdAt := getInformation(originalOcorenSplitChar, CREATED_AT_INIT, CREATED_AT_END)
-	layout := "2006-01-02T15:04:05.000Z"
-	proceda.CreatedAt, err = time.Parse(createdAt, layout)
-	checkError(err, "Error: time.Parse(createdAt, layout)")
+	//createdAt := getInformation(originalOcorenSplitChar, CREATED_AT_INIT, CREATED_AT_END)
+	//layout := "2006-01-02T15:04:05.000Z"
+	//proceda.CreatedAt, err = time.Parse(createdAt, layout)
+	//checkError(err, "Error: time.Parse(createdAt, layout)")
 	return nil
 }
 
@@ -161,54 +169,99 @@ const FILE_IDENTIFIER_END = 73
 
 //Cabecalho do arquivo("340")
 func (proceda *OccurrenceProceda) readHeadTwo(originalOcorenSplitChar []string) (err error) {
-	proceda.HeadFileTwoRecordIdentifier = RECORD_HEARD_TWO
+	proceda.HeadFileTwoRecordIdentifier = getRecordIdentifier(originalOcorenSplitChar)
 	proceda.FileIdentifier = getInformation(originalOcorenSplitChar, FILE_IDENTIFIER_INIT, FILE_IDENTIFIER_END)
 	return nil
 }
 
+const REGISTERED_NUMBER_CARRIER_INIT = 3
+const REGISTERED_NUMBER_CARRIER_END = 17
+const CARRIER_NAME_INIT = 17
+const CARRIER_NAME_END = 57
+const FILLER_CARRIER_INIT = 57
+const FILLER_CARRIER_END = 119
+
 //"341"
 func (proceda *OccurrenceProceda) carrierDatas(originalOcorenSplitChar []string) (err error) {
-	/*
-		type Carrier struct {
-			CarrierRecordIdentifier int    `json: "identificador"`
-			RegisteredNumber        string `json: "cnpj_transportadora"`
-			Name                    string `json: "nome_transportadora"`
-			Filler                  string `json: "-"`
-			TransportKnowledges     []TransportKnowledge
-		}
-	*/
 	proceda.CarrierRecordIdentifier = getRecordIdentifier(originalOcorenSplitChar)
-	proceda.RegisteredNumber = getRegisteredNumber(originalOcorenSplitChar)
-	proceda.Name = getName(originalOcorenSplitChar)
+	proceda.RegisteredNumberCarrier = getInformation(originalOcorenSplitChar, REGISTERED_NUMBER_CARRIER_INIT, REGISTERED_NUMBER_CARRIER_END)
+	proceda.Name = getInformation(originalOcorenSplitChar, CARRIER_NAME_INIT, CARRIER_NAME_END)
+	proceda.FillerCarrier = getInformation(originalOcorenSplitChar, FILLER_CARRIER_INIT, FILLER_CARRIER_END)
+	proceda.TransportKnowledges = append(proceda.TransportKnowledges, TransportKnowledge{})
 	return nil
 }
 
-func getRegisteredNumber(originalOcorenSplitChar []string) (registeredNumber string) {
-	registeredNumberInit := 3
-	registeredNumberEnd := 13
-	for i := registeredNumberInit; i < registeredNumberEnd; i++ {
-		registeredNumber = registeredNumber + originalOcorenSplitChar[i]
-	}
-	return registeredNumber
-}
-func getName(originalOcorenSplitChar []string) (name string) {
-	nameInit := 3
-	nameEnd := 13
-	for i := nameInit; i < nameEnd; i++ {
-		name = name + originalOcorenSplitChar[i]
-	}
-	return name
-}
+const REGISTERED_NUMBER_CTE_INIT = 3
+const REGISTERED_NUMBER_CTE_END = 17
+const CONTRACTING_CARRIER_INIT = 17
+const CONTRACTING_CARRIER_END = 27
+const SERIES_CTE_INIT = 27
+const SERIES_CTE_END = 32
+const NUMBER_CTE_INIT = 32
+const NUMBER_CTE_END = 44
 
-//"343"
-func (proceda *OccurrenceProceda) dispacherDatas(originalOcorenSplitChar []string) (err error) {
+//"343" "TransportKnowledge"
+func (proceda *OccurrenceProceda) dispacherDatas(originalOcorenSplitChar []string, ctePosition int) (err error) {
+	proceda.TransportKnowledges[ctePosition].TransportKnowledgeRecordIdentifier = getRecordIdentifier(originalOcorenSplitChar)
+	proceda.TransportKnowledges[ctePosition].RegisteredNumberCte = getInformation(originalOcorenSplitChar, REGISTERED_NUMBER_CTE_INIT, REGISTERED_NUMBER_CTE_END)
+	proceda.TransportKnowledges[ctePosition].ContractingCarrier = getInformation(originalOcorenSplitChar, CONTRACTING_CARRIER_INIT, CONTRACTING_CARRIER_END)
+	proceda.TransportKnowledges[ctePosition].Series, _ = strconv.Atoi(getInformation(originalOcorenSplitChar, SERIES_CTE_INIT, SERIES_CTE_END))
+	proceda.TransportKnowledges[ctePosition].Number, _ = strconv.Atoi(getInformation(originalOcorenSplitChar, NUMBER_CTE_INIT, NUMBER_CTE_END))
 	return nil
 }
+
+const OCCURRENCE_DATE_INIT = 30
+const OCCURRENCE_DATE_END = 42
+
+const TEXT_INIT = 44
+const TEXT_END = 115
+
+const FILLER_OCCURRENCE_INIT = 115
+const FILLER_OCCURRENCE_END = 119
 
 //"342"
-func (proceda *OccurrenceProceda) readOccurrences(originalOcorenSplitChar []string) (err error) {
+func (proceda *OccurrenceProceda) readOccurrences(originalOcorenSplitChar []string, ctePosition int, ocorenPosition int) (err error) {
+	fmt.Println("dentro da função readOccurrences")
+	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].Invoice = getInvoice(originalOcorenSplitChar)
+	fmt.Println(proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].Invoice)
+	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceCode = getOccurrenceCode(originalOcorenSplitChar)
+	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceRecordIdentifier = getRecordIdentifier(originalOcorenSplitChar)
+	//TODO: TRATAR DATA E HORA
+	//proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceDate = getInformation(originalOcorenSplitChar, OCCURRENCE_DATE_INIT, OCCURRENCE_DATE_END)
+	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].Text = getInformation(originalOcorenSplitChar, TEXT_INIT, TEXT_END)
+	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].FillerOccurrence = getInformation(originalOcorenSplitChar, FILLER_OCCURRENCE_INIT, FILLER_OCCURRENCE_END)
 	return nil
 }
+
+const REGISTERED_NUMBER_INVOICE_INIT = 3
+const REGISTERED_NUMBER_INVOICE_END = 17
+
+const SERIES_NFE_INIT = 17
+const SERIES_NFE_END = 20
+
+const NUMBER_NFE_INIT = 20
+const NUMBER_NFE_END = 28
+
+func getInvoice(originalOcorenSplitChar []string) (invoice Invoice) {
+	//TODO: ESTA FUNÇÃO ESTA ERRADA
+	invoice.RegisteredNumberInvoice = getInformation(originalOcorenSplitChar, REGISTERED_NUMBER_INVOICE_INIT, REGISTERED_NUMBER_INVOICE_END)
+	fmt.Println("invoice.RegisteredNumberInvoice = ", invoice.RegisteredNumberInvoice)
+	invoice.Series, _ = strconv.Atoi(getInformation(originalOcorenSplitChar, SERIES_NFE_INIT, SERIES_NFE_END))
+	fmt.Println("invoice.Series = ", invoice.Series)
+	invoice.Number, _ = strconv.Atoi(getInformation(originalOcorenSplitChar, NUMBER_NFE_INIT, NUMBER_NFE_INIT))
+	fmt.Println("invoice.Number = ", invoice.Number)
+	return invoice
+}
+
+const OCCURRENCE_CODE_INIT = 42
+const OCCURRENCE_CODE_END = 44
+
+func getOccurrenceCode(originalOcorenSplitChar []string) (OccurrenceCode OccurrenceCode) {
+	OccurrenceCode.Code, _ = strconv.Atoi(getInformation(originalOcorenSplitChar, OCCURRENCE_CODE_INIT, OCCURRENCE_CODE_END))
+	OccurrenceCode.Description = "TERÁ UMA DECRIÇÃO EM BREVE"
+	return OccurrenceCode
+}
+
 func checkError(err error, message string) {
 	if err != nil {
 		fmt.Println(message)
@@ -220,7 +273,7 @@ func getRecordIdentifier(originalOcorenSplitChar []string) (recordIdentifier int
 	record := originalOcorenSplitChar[0] + originalOcorenSplitChar[1] + originalOcorenSplitChar[2]
 	fmt.Println("record = ", record)
 	recordIdentifier, err := strconv.Atoi(record)
-	checkError(err, "err: getRecordIdentifier")
+	checkError(err, "err: getRecordIdentifier "+record)
 	return recordIdentifier
 }
 

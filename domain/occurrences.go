@@ -2,8 +2,9 @@ package domain
 
 type OccurrencesFile interface {
 	OpenFile() (fileOcoren []byte, err error)
-	ReadHead(fileOcoren []string)
-	CarrierDatas(fileOcoren []string)
-	DispacherDatas(fileOcoren []string)
-	ReadOccurrences(fileOcoren []string)
+	readHead(fileOcoren []string)
+	carrierDatas(fileOcoren []string)
+	dispacherDatas(fileOcoren []string)
+	readOccurrences(fileOcoren []string)
+	ReadFile(fileName string) (err error)
 }
