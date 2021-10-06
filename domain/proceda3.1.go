@@ -258,7 +258,8 @@ func getOccurrenceCode(originalOcorenSplitChar []string) (OccurrenceCode Occurre
 func checkError(err error, message string) {
 	if err != nil {
 		fmt.Println(message)
-		panic(err)
+		fmt.Println(err)
+		//panic(err)
 	}
 }
 
