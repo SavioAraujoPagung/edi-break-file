@@ -1,4 +1,4 @@
-package domain
+package ocoren
 
 type OccurrencesFile interface {
 	OpenFile() (fileOcoren []byte, err error)

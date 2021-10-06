@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/SavioAraujoPagung/edi-break-file/domain"
+	domain "github.com/SavioAraujoPagung/edi-break-file/pkg/ocoren"
 	"github.com/gorilla/mux"
 )
 
