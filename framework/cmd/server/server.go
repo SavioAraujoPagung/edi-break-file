@@ -22,12 +22,12 @@ func main() {
 }
 
 type File struct {
-	Name string `json: "nome"`
+	Name string `json:"nome"`
 }
 
 type Proceda struct {
-	Name              string `json: "nome"`
-	AmountOccurrences int    `json: "amount_occurrences"`
+	Name              string `json:"nome"`
+	AmountOccurrences int    `json:"amount_occurrences"`
 }
 
 func create(writer http.ResponseWriter, request *http.Request) {
