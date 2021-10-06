@@ -37,21 +37,22 @@ func create(writer http.ResponseWriter, request *http.Request) {
 
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
-		fmt.Println("Erro ao ler body")
+		fmt.Println("Erro: ler body")
 	}
 
 	err = json.Unmarshal(body, &file)
 	if err != nil {
-		fmt.Println("Erro no unmarshal")
+		fmt.Println("Erro: unmarshal")
 	}
 	fileProceda.FileName = file.Name
 	//magica acontece
 	err = fileProceda.ReadFile(file.Name)
 	if err != nil {
-		fmt.Println("Erro ao ler arquivo")
+		fmt.Println("Erro: ler arquivo")
 	}
 	writer.Header().Set("Content=Type", "application/json")
 	json.NewEncoder(writer).Encode(fileProceda)
+	fmt.Println("File Read:", file.Name)
 }
 
 func getProceda(w http.ResponseWriter, request *http.Request) {
