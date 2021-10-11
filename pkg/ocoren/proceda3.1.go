@@ -120,7 +120,6 @@ func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
 		case RECORD_CARRIER:
 			err = proceda.carrierDatas(originalOcorenSplitChar)
 			checkError(err, "Error: to read carrier Datas")
-
 		case RECORD_OCOREN:
 			err = proceda.readOccurrences(originalOcorenSplitChar, ctePosition, ocorenPosition)
 			checkError(err, "Error: to read Occurrences")

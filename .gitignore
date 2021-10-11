@@ -1,2 +1,5 @@
 framework/utils/.pgdata/
 FILEOCOREN/*
+docker/data
+cmd/OCO_COMVAR1409115128.txt
+cmd/ocoren_proceda.txt
