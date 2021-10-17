@@ -1,23 +1,23 @@
 package repositories
 
 import (
-	"fmt"
-	"os"
+	"log"
 
 	"github.com/SavioAraujoPagung/edi-break-file/pkg/ocoren"
-	"github.com/jinzhu/gorm"
-	"github.com/joho/godotenv"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 type OcorenRepository interface {
-	Insert(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error)
+	InsertProceda(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error)
+	//	InsertProceda(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error)
 }
 
 type OcorenRepositoryDb struct {
 	Db *gorm.DB
 }
 
-func (repo OcorenRepositoryDb) Insert(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error) {
+func (repo *OcorenRepositoryDb) InsertProceda(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error) {
 	err := repo.Db.Create(ocoren).Error
 	if err != nil {
 
@@ -26,19 +26,30 @@ func (repo OcorenRepositoryDb) Insert(ocoren *ocoren.OccurrencesFile) (*ocoren.O
 	return ocoren, nil
 }
 
-func ConnectDB() *gorm.DB {
-	err := godotenv.Load()
-
+func (repo OcorenRepositoryDb) FindAll(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error) {
+	err := repo.Db.Create(ocoren).Error
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
-	dsn := os.Getenv("dsn")
+	return ocoren, nil
+}
 
-	db, err := gorm.Open("postgres", dsn)
+func connectDB() *gorm.DB {
+	dsn := "host=localhost user=postgres password=root dbname=break_file_db_dev port=5412 sslmode=disable"
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		fmt.Println(err)
+		log.Panic(err)
 	}
-
-	db.AutoMigrate(&ocoren.OccurrenceProceda{})
 	return db
+}
+
+func FindOccurrenceCode(ocorenCode *ocoren.OccurrenceCode, code int) {
+	db := connectDB()
+	db.First(ocorenCode, code)
+}
+
+func Test(test *ocoren.Test) {
+	db := connectDB()
+	db.First(test, "10")
+	db.Create(test)
 }

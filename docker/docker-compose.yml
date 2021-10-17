@@ -2,7 +2,9 @@ version: "3.7"
 
 services:
   bd:
-    image: postgres:9.4
+    image: postgres:11.5
+    ports:
+      - 5412:5432
     restart: always
     tty: true
     volumes:
@@ -10,5 +12,4 @@ services:
     environment:
       - POSTEGRES_PASSWORD=root
       - POSTGRES_DB=break_file_db_dev
-    ports:
-      - 5413:5432
+    

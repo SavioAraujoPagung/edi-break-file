@@ -3,9 +3,9 @@ package ocoren
 import (
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"strconv"
 	"strings"
-	"time"
 )
 
 const RECORD_HEARD = 0
@@ -29,85 +29,17 @@ const AMOUNT_RECORD_342_BY_341 = 5000
 //Ocorrencia na entrega
 const AMOUNT_RECORD_343_BY_342 = 1
 
-//Cabeçalho do arquivo - "000"
-type HeadFile struct {
-	HeadFileRecordIdentifier int       `json:"identificador"`
-	SenderName               string    `json:"remetente"`
-	RecipientName            string    `json:"destinatario"`
-	CreatedAt                time.Time `json:"data_criacao"`
-	FillerHeadFile           string    `json:"complemento"`
-}
-
-//Cabeçalho dois - "340"
-type HeadFileTwo struct {
-	HeadFileTwoRecordIdentifier int    `json:"identificador"`
-	FileIdentifier              string `json:"identificador_arquivo"`
-	FillerHeadFileTwo           string `json:"complemento"`
-}
-
-//Informação de transportadora - "341"
-type Carrier struct {
-	CarrierRecordIdentifier int                  `json:"identificador"`
-	RegisteredNumberCarrier string               `json:"cnpj_transportadora"`
-	Name                    string               `json:"nome_transportadora"`
-	FillerCarrier           string               `json:"complemento"`
-	TransportKnowledges     []TransportKnowledge `json:"ct-e"`
-}
-
-//Conhecimento de transporte CT-e - "343"
-type TransportKnowledge struct {
-	TransportKnowledgeRecordIdentifier int          `json:"identificador"`
-	RegisteredNumberCte                string       `json:"cgc_contratante"`
-	ContractingCarrier                 string       `json:"transportadora_contratante"`
-	Series                             int          `json:"cte_serie"`
-	Number                             int          `json:"cte_numero"`
-	Occurrences                        []Occurrence `json:"ocorrencias"`
-}
-
-//Nota fiscal - NF-e
-type Invoice struct {
-	RegisteredNumberInvoice string `json:"nfe_cnpj_emitente"`
-	Series                  int    `json:"nfe_serie"`
-	Number                  int    `json:"nfe_numero"`
-}
-
-//Codigo da ocorrencia - vide tabela de ocorrencias Proceda-3.1
-type OccurrenceCode struct {
-	Code        int    `json:"codigo_ocorrencia"`
-	Description string `json:"nome_ocorrencia"`
-}
-
-//Informações sobre uma ocorrencia - "342"
-type Occurrence struct {
-	OccurrenceRecordIdentifier int            `json:"identificador"`
-	Invoice                    Invoice        `json:"nf-e"`
-	OccurrenceCode             OccurrenceCode `json:"codigo_ocorencia"`
-	OccurrenceDate             time.Time      `json:"data_ocorencia"`
-	ObservationCode            int            `json:"observacao_entrega"`
-	Text                       string         `json:"texto"`
-	FillerOccurrence           string         `json:"complemento"`
-}
-
-//PROCEDA-3.1
-type OccurrenceProceda struct {
-	FileName    string                  `json:"nome_do_arquivo"`
-	ContentFile string                  `json:"-"`
-	HeadFile    `json:"cabecalho"`      //000
-	HeadFileTwo `json:"cabecalhoDois"`  //340
-	Carrier     `json:"transportadora"` //341
-
-}
-
 //read all content file - OCOREN PROCEDA 3.1
 func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
-	//Abrir arquivo
+	proceda.ID = rand.Intn(100000)
 	fileOcoren, err := ioutil.ReadFile(fileName)
 	checkError(err, "Error: open file")
 	proceda.ContentFile = string(fileOcoren)
 	originalOcorenSplitLine := strings.Split(proceda.ContentFile, "\n")
 	var ctePosition int = 0
 	var ocorenPosition int = 0
-	for line := 0; line < len(originalOcorenSplitLine); line++ {
+	var amountLine int = len(originalOcorenSplitLine)
+	for line := 0; line < amountLine; line++ {
 		originalOcorenSplitChar := strings.Split(originalOcorenSplitLine[line], "")
 		recordIdentifier := getRecordIdentifier(originalOcorenSplitChar)
 		switch recordIdentifier {
@@ -123,13 +55,14 @@ func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
 		case RECORD_OCOREN:
 			err = proceda.readOccurrences(originalOcorenSplitChar, ctePosition, ocorenPosition)
 			checkError(err, "Error: to read Occurrences")
-			ocorenPosition = (ocorenPosition + 1)
+			proceda.AmountOccurrences++
+			ocorenPosition++
 		case RECORD_CTE:
 			err = proceda.dispacherDatas(originalOcorenSplitChar, ctePosition)
 			checkError(err, "Error: to read dispacher datas")
 			ctePosition = (ctePosition + 1)
 			ocorenPosition = 0
-			/**/
+			proceda.AmountTransportKnowledges++
 		}
 	}
 
@@ -224,7 +157,7 @@ func (proceda *OccurrenceProceda) readOccurrences(originalOcorenSplitChar []stri
 	//proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceDate = getInformation(originalOcorenSplitChar, OCCURRENCE_DATE_INIT, OCCURRENCE_DATE_END)
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].Text = getInformation(originalOcorenSplitChar, TEXT_INIT, TEXT_END)
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].FillerOccurrence = getInformation(originalOcorenSplitChar, FILLER_OCCURRENCE_INIT, FILLER_OCCURRENCE_END)
-
+	proceda.TransportKnowledges[ctePosition].AmountOccurrences++
 	return nil
 }
 

@@ -8,3 +8,8 @@ type OccurrencesFile interface {
 	readOccurrences(fileOcoren []string)
 	ReadFile(fileName string) (err error)
 }
+
+type Test struct {
+	I  int    `gorm:"column:id"`
+	Nm string `gorm:"column:nome"`
+}
