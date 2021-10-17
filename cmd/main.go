@@ -15,6 +15,7 @@ func main() {
 	muxRoute := mux.NewRouter().StrictSlash(true)
 	muxRoute.HandleFunc("/proceda", server.Create).Methods("POST")
 	muxRoute.HandleFunc("/teste", server.Teste).Methods("POST")
+	muxRoute.HandleFunc("/testequey", server.TestQuery).Methods("POST")
 	fmt.Println("api is online ", PORT)
 	log.Fatal(http.ListenAndServe(PORT, muxRoute))
 }
