@@ -20,8 +20,6 @@ type Proceda struct {
 }
 
 func Teste(writer http.ResponseWriter, request *http.Request) {
-	Teste := ocoren.Test{I: 1, Nm: "teste"}
-	repositories.Test(&Teste)
 	fmt.Println("ola mundo teste")
 }
 
@@ -42,8 +40,9 @@ func Create(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		fmt.Println("Erro: unmarshal")
 	}
+	occurrences := repositories.FindAllOccurrences()
 	fileProceda.FileName = file.Name
-	err = fileProceda.ReadFile(file.Name)
+	err = fileProceda.ReadFile(file.Name, occurrences)
 	if err != nil {
 		fmt.Println("Erro: ler arquivo")
 	}

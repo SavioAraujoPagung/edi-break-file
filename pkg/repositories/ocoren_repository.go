@@ -47,6 +47,17 @@ func FindOccurrenceCode(ocorenCode *ocoren.OccurrenceCode, code int) {
 	db.First(ocorenCode, code)
 }
 
+func FindAllOccurrences() []ocoren.OccurrenceCode {
+	var occurrences []ocoren.OccurrenceCode
+	id := make([]int, 0, 100)
+	for i := 0; i < 100; i++ {
+		id = append(id, i)
+	}
+	db := connectDB()
+	db.Find(&occurrences, id)
+	return occurrences
+}
+
 func Test(test *ocoren.Test) {
 	db := connectDB()
 	db.First(test, "10")

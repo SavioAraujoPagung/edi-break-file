@@ -30,7 +30,7 @@ const AMOUNT_RECORD_342_BY_341 = 5000
 const AMOUNT_RECORD_343_BY_342 = 1
 
 //read all content file - OCOREN PROCEDA 3.1
-func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
+func (proceda *OccurrenceProceda) ReadFile(fileName string, occurrences []OccurrenceCode) (err error) {
 	proceda.ID = rand.Intn(100000)
 	fileOcoren, err := ioutil.ReadFile(fileName)
 	checkError(err, "Error: open file")
@@ -54,7 +54,7 @@ func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
 			err = proceda.carrierDatas(originalOcorenSplitChar)
 			checkError(err, "Error: to read carrier Datas")
 		case RECORD_OCOREN:
-			err = proceda.readOccurrences(originalOcorenSplitChar, ctePosition, ocorenPosition)
+			err = proceda.readOccurrences(originalOcorenSplitChar, ctePosition, ocorenPosition, occurrences)
 			checkError(err, "Error: to read Occurrences")
 			proceda.AmountOccurrences++
 			ocorenPosition++
@@ -145,10 +145,10 @@ const FILLER_OCCURRENCE_INIT = 115
 const FILLER_OCCURRENCE_END = 119
 
 //"342"
-func (proceda *OccurrenceProceda) readOccurrences(originalOcorenSplitChar []string, ctePosition int, ocorenPosition int) (err error) {
+func (proceda *OccurrenceProceda) readOccurrences(originalOcorenSplitChar []string, ctePosition int, ocorenPosition int, occurrences []OccurrenceCode) (err error) {
 	proceda.TransportKnowledges[ctePosition].Occurrences = append(proceda.TransportKnowledges[ctePosition].Occurrences, Occurrence{})
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].Invoice = getInvoice(originalOcorenSplitChar)
-	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceCode = getOccurrenceCode(originalOcorenSplitChar)
+	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceCode = getOccurrenceCode(originalOcorenSplitChar, occurrences)
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceRecordIdentifier = getRecordIdentifier(originalOcorenSplitChar)
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceDate = getInformation(originalOcorenSplitChar, OCCURRENCE_DATE_INIT, OCCURRENCE_DATE_END)
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].Text = getInformation(originalOcorenSplitChar, TEXT_INIT, TEXT_END)
@@ -176,9 +176,9 @@ func getInvoice(originalOcorenSplitChar []string) (invoice Invoice) {
 const OCCURRENCE_CODE_INIT = 42
 const OCCURRENCE_CODE_END = 44
 
-func getOccurrenceCode(originalOcorenSplitChar []string) (OccurrenceCode OccurrenceCode) {
+func getOccurrenceCode(originalOcorenSplitChar []string, occurrences []OccurrenceCode) (OccurrenceCode OccurrenceCode) {
 	OccurrenceCode.Code, _ = strconv.Atoi(getInformation(originalOcorenSplitChar, OCCURRENCE_CODE_INIT, OCCURRENCE_CODE_END))
-	OccurrenceCode.Description = "TERÁ UMA DECRIÇÃO EM BREVE"
+	OccurrenceCode = occurrences[OccurrenceCode.Code]
 	return OccurrenceCode
 }
 
