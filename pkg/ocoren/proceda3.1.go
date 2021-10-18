@@ -84,10 +84,7 @@ func (proceda *OccurrenceProceda) readHead(originalOcorenSplitChar []string) (er
 	proceda.HeadFileRecordIdentifier = getRecordIdentifier(originalOcorenSplitChar)
 	proceda.SenderName = getInformation(originalOcorenSplitChar, SENDER_NAME_INIT, SENDER_NAME_END)
 	proceda.RecipientName = getInformation(originalOcorenSplitChar, RECIPIENT_NAME_INIT, RECIPIENT_NAME_END)
-	//createdAt := getInformation(originalOcorenSplitChar, CREATED_AT_INIT, CREATED_AT_END)
-	//layout := "2006-01-02T15:04:05.000Z"
-	//proceda.CreatedAt, err = time.Parse(createdAt, layout)
-	//checkError(err, "Error: time.Parse(createdAt, layout)")
+	proceda.CreatedAt = getInformation(originalOcorenSplitChar, CREATED_AT_INIT, CREATED_AT_END)
 	return nil
 }
 
@@ -149,13 +146,11 @@ const FILLER_OCCURRENCE_END = 119
 
 //"342"
 func (proceda *OccurrenceProceda) readOccurrences(originalOcorenSplitChar []string, ctePosition int, ocorenPosition int) (err error) {
-	//TODO: tratar os dispacherDatas
 	proceda.TransportKnowledges[ctePosition].Occurrences = append(proceda.TransportKnowledges[ctePosition].Occurrences, Occurrence{})
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].Invoice = getInvoice(originalOcorenSplitChar)
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceCode = getOccurrenceCode(originalOcorenSplitChar)
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceRecordIdentifier = getRecordIdentifier(originalOcorenSplitChar)
-	//TODO: TRATAR DATA E HORA
-	//proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceDate = getInformation(originalOcorenSplitChar, OCCURRENCE_DATE_INIT, OCCURRENCE_DATE_END)
+	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].OccurrenceDate = getInformation(originalOcorenSplitChar, OCCURRENCE_DATE_INIT, OCCURRENCE_DATE_END)
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].Text = getInformation(originalOcorenSplitChar, TEXT_INIT, TEXT_END)
 	proceda.TransportKnowledges[ctePosition].Occurrences[ocorenPosition].FillerOccurrence = getInformation(originalOcorenSplitChar, FILLER_OCCURRENCE_INIT, FILLER_OCCURRENCE_END)
 	proceda.TransportKnowledges[ctePosition].AmountOccurrences++
@@ -172,7 +167,6 @@ const NUMBER_NFE_INIT = 20
 const NUMBER_NFE_END = 28
 
 func getInvoice(originalOcorenSplitChar []string) (invoice Invoice) {
-	//TODO: ESTA FUNÇÃO ESTA ERRADA
 	invoice.RegisteredNumberInvoice = getInformation(originalOcorenSplitChar, REGISTERED_NUMBER_INVOICE_INIT, REGISTERED_NUMBER_INVOICE_END)
 	invoice.Series, _ = strconv.Atoi(getInformation(originalOcorenSplitChar, SERIES_NFE_INIT, SERIES_NFE_END))
 	invoice.Number, _ = strconv.Atoi(getInformation(originalOcorenSplitChar, NUMBER_NFE_INIT, NUMBER_NFE_INIT))

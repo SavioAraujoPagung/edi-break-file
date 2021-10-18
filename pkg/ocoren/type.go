@@ -1,16 +1,12 @@
 package ocoren
 
-import (
-	"time"
-)
-
 //Cabeçalho do arquivo - "000"
 type HeadFile struct {
-	HeadFileRecordIdentifier int       `json:"identificador"`
-	SenderName               string    `json:"remetente"`
-	RecipientName            string    `json:"destinatario"`
-	CreatedAt                time.Time `json:"data_criacao"`
-	FillerHeadFile           string    `json:"complemento"`
+	HeadFileRecordIdentifier int    `json:"identificador"`
+	SenderName               string `json:"remetente"`
+	RecipientName            string `json:"destinatario"`
+	CreatedAt                string `json:"data_criacao"`
+	FillerHeadFile           string `json:"complemento"`
 }
 
 //Cabeçalho dois - "340"
@@ -60,7 +56,7 @@ type Occurrence struct {
 	OccurrenceRecordIdentifier int            `json:"identificador"`
 	Invoice                    Invoice        `json:"nf-e"`
 	OccurrenceCode             OccurrenceCode `json:"codigo_ocorencia"`
-	OccurrenceDate             time.Time      `json:"data_ocorencia"`
+	OccurrenceDate             string         `json:"data_ocorencia"`
 	ObservationCode            int            `json:"observacao_entrega"`
 	Text                       string         `json:"texto"`
 	FillerOccurrence           string         `json:"complemento"`

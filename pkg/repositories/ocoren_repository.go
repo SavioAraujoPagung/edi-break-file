@@ -20,7 +20,6 @@ type OcorenRepositoryDb struct {
 func (repo *OcorenRepositoryDb) InsertProceda(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error) {
 	err := repo.Db.Create(ocoren).Error
 	if err != nil {
-
 		return nil, err
 	}
 	return ocoren, nil
