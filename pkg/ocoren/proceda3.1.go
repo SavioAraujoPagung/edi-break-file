@@ -39,6 +39,7 @@ func (proceda *OccurrenceProceda) ReadFile(fileName string) (err error) {
 	var ctePosition int = 0
 	var ocorenPosition int = 0
 	var amountLine int = len(originalOcorenSplitLine)
+	proceda.TransportKnowledges = make([]TransportKnowledge, 0, 5000)
 	for line := 0; line < amountLine; line++ {
 		originalOcorenSplitChar := strings.Split(originalOcorenSplitLine[line], "")
 		recordIdentifier := getRecordIdentifier(originalOcorenSplitChar)
