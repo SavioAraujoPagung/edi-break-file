@@ -40,6 +40,8 @@ func (proceda *OccurrenceProceda) ReadFile(fileName string, occurrences []Occurr
 	var ocorenPosition int = 0
 	var amountLine int = len(originalOcorenSplitLine)
 	proceda.TransportKnowledges = make([]TransportKnowledge, 0, 5000)
+
+	//TODO: REFACTOR RECORD 342 AND 343. LIST 342 CT-E NOT EXIST
 	for line := 0; line < amountLine; line++ {
 		recordIdentifier := getRecordIdentifier(originalOcorenSplitLine[line])
 		switch recordIdentifier {
