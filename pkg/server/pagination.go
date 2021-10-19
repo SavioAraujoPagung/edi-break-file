@@ -48,7 +48,8 @@ func setTransportKnowledges(responceProceda *ocoren.OccurrenceProceda,
 	for indexTransportKnowledge := transportKnowledgesInit; indexTransportKnowledge < transportKnowledgesEnd; indexTransportKnowledge++ {
 		if indexTransportKnowledge < fileProceda.Carrier.AmountTransportKnowledges {
 			responceProceda.Carrier.TransportKnowledges = append(responceProceda.Carrier.TransportKnowledges, fileProceda.Carrier.TransportKnowledges[indexTransportKnowledge])
-			setOccurrences(&responceProceda.Carrier.TransportKnowledges[indexTransportKnowledge],
+			indexResponceProceda := len(responceProceda.Carrier.TransportKnowledges) - 1
+			setOccurrences(&responceProceda.Carrier.TransportKnowledges[indexResponceProceda],
 				&fileProceda.Carrier.TransportKnowledges[indexTransportKnowledge],
 				maxOccurrences,
 				pageOccurrences)

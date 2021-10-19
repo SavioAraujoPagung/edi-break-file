@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math/rand"
+	"reflect"
 	"strconv"
 	"strings"
 )
@@ -66,18 +67,19 @@ func (proceda *OccurrenceProceda) ReadFile(fileName string, occurrences []Occurr
 			proceda.AmountTransportKnowledges++
 		}
 	}
-
 	return nil
 }
 
-const SENDER_NAME_INIT = 3
-const SENDER_NAME_END = 38
+const (
+	SENDER_NAME_INIT = 3
+	SENDER_NAME_END  = 38
 
-const RECIPIENT_NAME_INIT = 38
-const RECIPIENT_NAME_END = 73
+	RECIPIENT_NAME_INIT = 38
+	RECIPIENT_NAME_END  = 74
 
-const CREATED_AT_INIT = 0
-const CREATED_AT_END = 0
+	CREATED_AT_INIT = 73
+	CREATED_AT_END  = 83
+)
 
 //Cabecalho de intercambio ("000")
 func (proceda *OccurrenceProceda) readHead(originalOcorenSplitChar []string) (err error) {
@@ -88,8 +90,10 @@ func (proceda *OccurrenceProceda) readHead(originalOcorenSplitChar []string) (er
 	return nil
 }
 
-const FILE_IDENTIFIER_INIT = 3
-const FILE_IDENTIFIER_END = 13
+const (
+	FILE_IDENTIFIER_INIT = 3
+	FILE_IDENTIFIER_END  = 13
+)
 
 //Cabecalho do arquivo("340")
 func (proceda *OccurrenceProceda) readHeadTwo(originalOcorenSplitChar []string) (err error) {
@@ -98,12 +102,16 @@ func (proceda *OccurrenceProceda) readHeadTwo(originalOcorenSplitChar []string) 
 	return nil
 }
 
-const REGISTERED_NUMBER_CARRIER_INIT = 3
-const REGISTERED_NUMBER_CARRIER_END = 17
-const CARRIER_NAME_INIT = 17
-const CARRIER_NAME_END = 57
-const FILLER_CARRIER_INIT = 57
-const FILLER_CARRIER_END = 119
+const (
+	REGISTERED_NUMBER_CARRIER_INIT = 3
+	REGISTERED_NUMBER_CARRIER_END  = 17
+
+	CARRIER_NAME_INIT = 17
+	CARRIER_NAME_END  = 57
+
+	FILLER_CARRIER_INIT = 57
+	FILLER_CARRIER_END  = 119
+)
 
 //"341"
 func (proceda *OccurrenceProceda) carrierDatas(originalOcorenSplitChar []string) (err error) {
@@ -115,14 +123,19 @@ func (proceda *OccurrenceProceda) carrierDatas(originalOcorenSplitChar []string)
 	return nil
 }
 
-const REGISTERED_NUMBER_CTE_INIT = 3
-const REGISTERED_NUMBER_CTE_END = 17
-const CONTRACTING_CARRIER_INIT = 17
-const CONTRACTING_CARRIER_END = 27
-const SERIES_CTE_INIT = 27
-const SERIES_CTE_END = 32
-const NUMBER_CTE_INIT = 32
-const NUMBER_CTE_END = 44
+const (
+	REGISTERED_NUMBER_CTE_INIT = 3
+	REGISTERED_NUMBER_CTE_END  = 17
+
+	CONTRACTING_CARRIER_INIT = 17
+	CONTRACTING_CARRIER_END  = 27
+
+	SERIES_CTE_INIT = 27
+	SERIES_CTE_END  = 32
+
+	NUMBER_CTE_INIT = 32
+	NUMBER_CTE_END  = 44
+)
 
 //"343" "TransportKnowledge"
 func (proceda *OccurrenceProceda) dispacherDatas(originalOcorenSplitChar []string, ctePosition int) (err error) {
@@ -135,14 +148,16 @@ func (proceda *OccurrenceProceda) dispacherDatas(originalOcorenSplitChar []strin
 	return nil
 }
 
-const OCCURRENCE_DATE_INIT = 30
-const OCCURRENCE_DATE_END = 42
+const (
+	OCCURRENCE_DATE_INIT = 30
+	OCCURRENCE_DATE_END  = 42
 
-const TEXT_INIT = 44
-const TEXT_END = 115
+	TEXT_INIT = 44
+	TEXT_END  = 115
 
-const FILLER_OCCURRENCE_INIT = 115
-const FILLER_OCCURRENCE_END = 119
+	FILLER_OCCURRENCE_INIT = 115
+	FILLER_OCCURRENCE_END  = 119
+)
 
 //"342"
 func (proceda *OccurrenceProceda) readOccurrences(originalOcorenSplitChar []string, ctePosition int, ocorenPosition int, occurrences []OccurrenceCode) (err error) {
@@ -157,14 +172,16 @@ func (proceda *OccurrenceProceda) readOccurrences(originalOcorenSplitChar []stri
 	return nil
 }
 
-const REGISTERED_NUMBER_INVOICE_INIT = 3
-const REGISTERED_NUMBER_INVOICE_END = 17
+const (
+	REGISTERED_NUMBER_INVOICE_INIT = 3
+	REGISTERED_NUMBER_INVOICE_END  = 17
 
-const SERIES_NFE_INIT = 17
-const SERIES_NFE_END = 20
+	SERIES_NFE_INIT = 17
+	SERIES_NFE_END  = 20
 
-const NUMBER_NFE_INIT = 20
-const NUMBER_NFE_END = 28
+	NUMBER_NFE_INIT = 20
+	NUMBER_NFE_END  = 28
+)
 
 func getInvoice(originalOcorenSplitChar []string) (invoice Invoice) {
 	invoice.RegisteredNumberInvoice = getInformation(originalOcorenSplitChar, REGISTERED_NUMBER_INVOICE_INIT, REGISTERED_NUMBER_INVOICE_END)
@@ -173,8 +190,10 @@ func getInvoice(originalOcorenSplitChar []string) (invoice Invoice) {
 	return invoice
 }
 
-const OCCURRENCE_CODE_INIT = 42
-const OCCURRENCE_CODE_END = 44
+const (
+	OCCURRENCE_CODE_INIT = 42
+	OCCURRENCE_CODE_END  = 44
+)
 
 func getOccurrenceCode(originalOcorenSplitChar []string, occurrences []OccurrenceCode) (OccurrenceCode OccurrenceCode) {
 	OccurrenceCode.Code, _ = strconv.Atoi(getInformation(originalOcorenSplitChar, OCCURRENCE_CODE_INIT, OCCURRENCE_CODE_END))
@@ -198,8 +217,22 @@ func getRecordIdentifier(originalOcorenSplitChar []string) (recordIdentifier int
 }
 
 func getInformation(originalOcorenSplitChar []string, init int, end int) (information string) {
+	//information = originalOcorenSplitChar[init:end]
+
 	for i := init; i < end; i++ {
 		information = information + originalOcorenSplitChar[i]
 	}
 	return information
+}
+
+func main() {
+	type Ocoren struct {
+		A string `init:"25" end:"42"`
+	}
+	ocoren := Ocoren{}
+	st := reflect.TypeOf(ocoren)
+	field := st.Field(0)
+	init := field.Tag.Get("init")
+	end := field.Tag.Get("end")
+	fmt.Println(init, end)
 }
