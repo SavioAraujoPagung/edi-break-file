@@ -44,17 +44,17 @@ CREATE TABLE public.invoices (
 );
 
 
--- public.occurrencecodes definition
+-- public.occurrence_codes definition
 
 -- Drop table
 
--- DROP TABLE public.occurrencecodes;
+-- DROP TABLE public.occurrence_codes;
 
-CREATE TABLE public.occurrencecodes (
+CREATE TABLE public.occurrence_codes (
 	id int4 NOT NULL,
 	code int4 NULL,
 	description varchar(255) NULL,
-	CONSTRAINT occurrencecodes_pkey PRIMARY KEY (id)
+	CONSTRAINT occurrence_codes_pkey PRIMARY KEY (id)
 );
 
 
@@ -111,7 +111,7 @@ CREATE TABLE public.occurrences (
 	filler_occurrence varchar(255) NULL,
 	CONSTRAINT occurrences_pkey PRIMARY KEY (id),
 	CONSTRAINT occurrences_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES public.invoices(id),
-	CONSTRAINT occurrences_occurrence_code_id_fkey FOREIGN KEY (occurrence_code_id) REFERENCES public.occurrencecodes(id),
+	CONSTRAINT occurrences_occurrence_code_id_fkey FOREIGN KEY (occurrence_code_id) REFERENCES public.occurrence_codes(id),
 	CONSTRAINT occurrences_transport_knowledges_id_fkey FOREIGN KEY (transport_knowledges_id) REFERENCES public.transportknowledges(id)
 );
 

@@ -1,0 +1,10 @@
+POST http://localhost:1405/proceda
+Content-Type: application/json
+maxTransportKnowledges: 2
+pageTransportKnowledges: 5
+maxOccurrences: 3
+pageOccurrences: 1
+
+{
+	"nome": "ocoren_proceda.txt"
+}
