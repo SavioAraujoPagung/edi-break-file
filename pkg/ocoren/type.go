@@ -1,15 +1,19 @@
 package ocoren
 
+type OccurrenceFile struct {
+	ID                 int    `json:"id"`
+	FileName           string `json:"nome_do_arquivo"`
+	ContentFile        string `json:"-"`
+	AmountRedeployment int    `json:"quantidade_redespacho"`
+	AmountOccurrences  int    `json:"quantidade_ocorrencia"`
+}
+
 //PROCEDA-3.1
 type OccurrenceProceda struct {
-	ID                 int         `json:"id"`
-	FileName           string      `json:"nome_do_arquivo"`
-	ContentFile        string      `json:"-"`
-	AmountRedeployment int         `json:"quantidade_redespacho"`
-	AmountOccurrences  int         `json:"quantidade_ocorrencia"`
-	HeadFile           HeadFile    `json:"cabecalho"`      //000
-	HeadFileTwo        HeadFileTwo `json:"cabecalhoDois"`  //340
-	Carrier            Carrier     `json:"transportadora"` //341
+	OccurrenceFile `json:"informacoes"`
+	HeadFile       HeadFile    `json:"cabecalho"`      //000
+	HeadFileTwo    HeadFileTwo `json:"cabecalhoDois"`  //340
+	Carrier        Carrier     `json:"transportadora"` //341
 }
 
 //Cabeçalho do arquivo - "000"
