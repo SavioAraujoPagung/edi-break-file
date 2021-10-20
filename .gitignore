@@ -1,2 +1,6 @@
 framework/utils/.pgdata/
 FILEOCOREN/*
+docker/data
+cmd/*.txt
+cmd/*.pdf
+cmd/*.docx

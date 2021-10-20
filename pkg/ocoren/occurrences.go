@@ -1,4 +1,4 @@
-package domain
+package ocoren
 
 type OccurrencesFile interface {
 	OpenFile() (fileOcoren []byte, err error)
@@ -7,4 +7,9 @@ type OccurrencesFile interface {
 	dispacherDatas(fileOcoren []string)
 	readOccurrences(fileOcoren []string)
 	ReadFile(fileName string) (err error)
+}
+
+type Test struct {
+	I  int    `gorm:"column:id"`
+	Nm string `gorm:"column:nome"`
 }

@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  bd:
+    image: postgres:11.5
+    ports:
+      - 5412:5432
+    restart: always
+    tty: true
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    environment:
+      - POSTEGRES_PASSWORD=root
+      - POSTGRES_DB=break_file_db_dev
+    
