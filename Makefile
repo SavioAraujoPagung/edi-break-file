@@ -5,3 +5,6 @@ run:
 
 build:
 	go build cmd/main.go
+
+docker:
+	docker/sudo docker-compose up -d

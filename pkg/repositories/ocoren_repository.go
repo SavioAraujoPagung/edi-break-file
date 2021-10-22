@@ -9,23 +9,19 @@ import (
 )
 
 type OcorenRepository interface {
-	InsertProceda(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error)
-	//	InsertProceda(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error)
+	InsertProceda(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile)
 }
 
 type OcorenRepositoryDb struct {
 	Db *gorm.DB
 }
 
-func (repo *OcorenRepositoryDb) InsertProceda(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error) {
-	err := repo.Db.Create(ocoren).Error
-	if err != nil {
-		return nil, err
-	}
-	return ocoren, nil
+func (repo *OcorenRepositoryDb) InsertProceda(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile) {
+	repo.Db.Create(ocoren)
+	return nil
 }
 
-func (repo OcorenRepositoryDb) FindAll(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error) {
+func (repo *OcorenRepositoryDb) FindAll(ocoren *ocoren.OccurrencesFile) (*ocoren.OccurrencesFile, error) {
 	err := repo.Db.Create(ocoren).Error
 	if err != nil {
 		return nil, err
@@ -56,10 +52,4 @@ func FindAllOccurrences() []ocoren.OccurrenceCode {
 	db := connectDB()
 	db.Find(&occurrences, id)
 	return occurrences
-}
-
-func Test(test *ocoren.Test) {
-	db := connectDB()
-	db.First(test, "10")
-	db.Create(test)
 }

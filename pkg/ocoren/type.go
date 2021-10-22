@@ -10,7 +10,7 @@ type OccurrenceFile struct {
 
 //PROCEDA-3.1
 type OccurrenceProceda struct {
-	OccurrenceFile `json:"informacoes"`
+	OccurrenceFile `json:"dados"`
 	HeadFile       HeadFile    `json:"cabecalho"`      //000
 	HeadFileTwo    HeadFileTwo `json:"cabecalhoDois"`  //340
 	Carrier        Carrier     `json:"transportadora"` //341
@@ -25,12 +25,6 @@ type HeadFile struct {
 	FillerHeadFile           string `json:"complemento"`
 }
 
-/*
-const (
-	FILE_IDENTIFIER_INIT = 3
-	FILE_IDENTIFIER_END  = 13
-)
-*/
 //Cabeçalho dois - "340"
 type HeadFileTwo struct {
 	HeadFileTwoRecordIdentifier int    `json:"identificador" init:"0" end:"3"`
@@ -38,18 +32,6 @@ type HeadFileTwo struct {
 	FillerHeadFileTwo           string `json:"complemento"`
 }
 
-/*
-const (
-	REGISTERED_NUMBER_CARRIER_INIT = 3
-	REGISTERED_NUMBER_CARRIER_END  = 17
-
-	CARRIER_NAME_INIT = 17
-	CARRIER_NAME_END  = 57
-
-	FILLER_CARRIER_INIT = 57
-	FILLER_CARRIER_END  = 119
-)
-*/
 //Informação de transportadora - "341"
 type Carrier struct {
 	CarrierRecordIdentifier int          `json:"identificador" init:"0" end:"3"`

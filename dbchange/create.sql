@@ -4,7 +4,7 @@
 
 -- DROP TABLE public.headfiles;
 
-CREATE TABLE public.headfiles (
+CREATE TABLE public.head_files (
 	id int4 NOT NULL,
 	head_file_record_identifier int4 NULL,
 	sender_name varchar(255) NULL,
@@ -20,7 +20,7 @@ CREATE TABLE public.headfiles (
 
 -- DROP TABLE public.headfiletwos;
 
-CREATE TABLE public.headfiletwos (
+CREATE TABLE public.head_file_twos (
 	id int4 NOT NULL,
 	head_file_two_record_identifier int4 NULL,
 	file_identifier varchar(255) NULL,
@@ -58,20 +58,20 @@ CREATE TABLE public.occurrence_codes (
 );
 
 
--- public.transportknowledges definition
+-- public.Redeployments definition
 
 -- Drop table
 
--- DROP TABLE public.transportknowledges;
+-- DROP TABLE public.Redeployments;
 
-CREATE TABLE public.transportknowledges (
+CREATE TABLE public.redeployments (
 	id int4 NOT NULL,
-	transport_knowledge_record_identifier int4 NULL,
+	redeployment_record_identifier int4 NULL,
 	registered_number_cte int4 NULL,
 	contracting_carrier varchar(255) NULL,
 	cte_series int4 NULL,
 	cte_number int4 NULL,
-	CONSTRAINT transportknowledges_pkey PRIMARY KEY (id)
+	CONSTRAINT redeployments_pkey PRIMARY KEY (id)
 );
 
 
@@ -87,32 +87,7 @@ CREATE TABLE public.carriers (
 	registered_number_carrier varchar(255) NULL,
 	carrier_name varchar(255) NULL,
 	filler_carrier varchar(50) NULL,
-	transport_knowledges_id int4 NULL,
 	CONSTRAINT carriers_pkey PRIMARY KEY (id),
-	CONSTRAINT carriers_transport_knowledges_id_fkey FOREIGN KEY (transport_knowledges_id) REFERENCES public.transportknowledges(id)
-);
-
-
--- public.occurrences definition
-
--- Drop table
-
--- DROP TABLE public.occurrences;
-
-CREATE TABLE public.occurrences (
-	id int4 NOT NULL,
-	transport_knowledges_id int4 NULL,
-	occurrence_code_id int4 NULL,
-	invoice_id int4 NULL,
-	occurrence_record_identifier int4 NULL,
-	occurrence_date date NULL,
-	observation_code int4 NULL,
-	text_occurrence varchar(255) NULL,
-	filler_occurrence varchar(255) NULL,
-	CONSTRAINT occurrences_pkey PRIMARY KEY (id),
-	CONSTRAINT occurrences_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES public.invoices(id),
-	CONSTRAINT occurrences_occurrence_code_id_fkey FOREIGN KEY (occurrence_code_id) REFERENCES public.occurrence_codes(id),
-	CONSTRAINT occurrences_transport_knowledges_id_fkey FOREIGN KEY (transport_knowledges_id) REFERENCES public.transportknowledges(id)
 );
 
 
@@ -129,7 +104,39 @@ CREATE TABLE public.procedas (
 	head_file_two_id int4 NULL,
 	carrier_id int4 NULL,
 	CONSTRAINT procedas_pkey PRIMARY KEY (id),
-	CONSTRAINT "Procedas_carrier_id_fkey" FOREIGN KEY (carrier_id) REFERENCES public.carriers(id),
-	CONSTRAINT "Procedas_head_file_id_fkey" FOREIGN KEY (head_file_id) REFERENCES public.headfiles(id),
-	CONSTRAINT "Procedas_head_file_two_id_fkey" FOREIGN KEY (head_file_two_id) REFERENCES public.headfiletwos(id)
+
+	CONSTRAINT procedas_carrier_id_fkey FOREIGN KEY (carrier_id) REFERENCES public.carriers(id),
+	CONSTRAINT procedas_head_file_two_id_fkey FOREIGN KEY (head_file_two_id) REFERENCES public.headfiletwos(id)
+	CONSTRAINT procedas_head_file_id_fkey FOREIGN KEY (head_file_id) REFERENCES public.headfiles(id),
 );
+
+
+-- public.occurrences definition
+
+-- Drop table
+
+-- DROP TABLE public.occurrences;
+
+CREATE TABLE public.occurrences (
+	id int4 NOT NULL,
+
+	invoice_id int4 NULL,
+	occurrence_code_id int4 NULL,
+	redeployments_id int4 NULL,
+	carriers_id int4 NULL,
+
+	occurrence_record_identifier int4 NULL,
+	occurrence_date date NULL,
+	observation_code int4 NULL,
+	text_occurrence varchar(255) NULL,
+	filler_occurrence varchar(255) NULL,
+	CONSTRAINT occurrences_pkey PRIMARY KEY (id),
+	
+	CONSTRAINT occurrences_invoice_id_fkey FOREIGN KEY (invoice_id) REFERENCES public.invoices(id),
+	CONSTRAINT occurrences_occurrence_code_id_fkey FOREIGN KEY (occurrence_code_id) REFERENCES public.occurrence_codes(id),
+	CONSTRAINT redeployments_fkey FOREIGN KEY (redeployments_id) REFERENCES public.redeployments(id),
+	CONSTRAINT carriers_fkey FOREIGN KEY (carriers_id) REFERENCES public.carriers(id)
+	
+);
+
+
