@@ -10,10 +10,10 @@ type OccurrenceFile struct {
 
 //PROCEDA-3.1
 type OccurrenceProceda struct {
-	OccurrenceFile `json:"dados"`
-	HeadFile       HeadFile    `json:"cabecalho"`      //000
-	HeadFileTwo    HeadFileTwo `json:"cabecalhoDois"`  //340
-	Carrier        Carrier     `json:"transportadora"` //341
+	OccurrenceFile OccurrenceFile `json:"dados"`
+	HeadFile       HeadFile       `json:"cabecalho"`      //000
+	HeadFileTwo    HeadFileTwo    `json:"cabecalhoDois"`  //340
+	Carrier        Carrier        `json:"transportadora"` //341
 }
 
 //Cabeçalho do arquivo - "000"

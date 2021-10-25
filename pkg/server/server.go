@@ -25,13 +25,15 @@ func Teste(writer http.ResponseWriter, request *http.Request) {
 
 func TestQuery(writer http.ResponseWriter, request *http.Request) {
 	var ocorenCode ocoren.OccurrenceCode
-	repositories.FindOccurrenceCode(&ocorenCode, 10)
+	//repositories.FindOccurrenceCode(&ocorenCode, 10)
 	fmt.Println(ocorenCode)
 }
 
 func Create(writer http.ResponseWriter, request *http.Request) {
 	var fileProceda ocoren.OccurrenceProceda
 	var file File
+	var repo repositories.OcorenRepositoryDb
+	repo.ConnectDB()
 	body, err := io.ReadAll(request.Body)
 	if err != nil {
 		fmt.Println("Erro: ler body")
@@ -40,12 +42,14 @@ func Create(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		fmt.Println("Erro: unmarshal")
 	}
-	occurrences := repositories.FindAllOccurrences()
-	fileProceda.FileName = file.Name
+
+	occurrences := repo.FindAllOccurrences()
+	fileProceda.OccurrenceFile.FileName = file.Name
 	err = fileProceda.ReadFile(file.Name, occurrences)
 	if err != nil {
 		fmt.Println("Erro: ler arquivo")
 	}
+	repo.SaveProceda(fileProceda)
 	createResponsePaged(writer, request, &fileProceda)
 }
 

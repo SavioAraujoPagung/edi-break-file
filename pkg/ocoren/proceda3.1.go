@@ -31,14 +31,14 @@ const AMOUNT_RECORD_343_BY_342 = 1
 
 //read all content file - OCOREN PROCEDA 3.1
 func (proceda *OccurrenceProceda) ReadFile(fileName string, occurrencesCode []OccurrenceCode) (err error) {
-	proceda.ID = rand.Intn(100000)
+	proceda.OccurrenceFile.ID = getId()
 	fileOcoren, err := ioutil.ReadFile(fileName)
 	checkError(err, "Error: open file")
-	proceda.ContentFile = string(fileOcoren)
-	originalOcorenSplitLine := strings.Split(proceda.ContentFile, "\n")
-	var amountLine int = len(originalOcorenSplitLine)
+	proceda.OccurrenceFile.ContentFile = string(fileOcoren)
+	originalOcorenSplitLine := strings.Split(proceda.OccurrenceFile.ContentFile, "\n")
+	amountLine := len(originalOcorenSplitLine)
 	proceda.Carrier.Occurrences = make([]Occurrence, 0, amountLine)
-	proceda.AmountOccurrences = 0
+	proceda.OccurrenceFile.AmountOccurrences = 0
 	for line := 0; line < amountLine; line++ {
 		recordIdentifier := getRecordIdentifier(originalOcorenSplitLine[line])
 		switch recordIdentifier {
@@ -52,14 +52,19 @@ func (proceda *OccurrenceProceda) ReadFile(fileName string, occurrencesCode []Oc
 			err = proceda.readCarrier(originalOcorenSplitLine[line])
 			checkError(err, "Error: to read carrier Datas")
 		case RECORD_OCOREN:
-			err = proceda.readOccurrences(originalOcorenSplitLine[line], occurrencesCode, proceda.AmountOccurrences)
+			err = proceda.readOccurrences(originalOcorenSplitLine[line], occurrencesCode, proceda.OccurrenceFile.AmountOccurrences)
 			checkError(err, "Error: to read Occurrences")
 		case RECORD_CTE:
-			err = proceda.readRedeployment(originalOcorenSplitLine[line], (proceda.AmountOccurrences - 1))
+			err = proceda.readRedeployment(originalOcorenSplitLine[line], (proceda.OccurrenceFile.AmountOccurrences - 1))
 			checkError(err, "Error: to read dispacher datas")
 		}
 	}
 	return nil
+}
+
+func getId() (id int) {
+	id = rand.Intn(100000)
+	return id
 }
 
 const (
@@ -134,7 +139,7 @@ func (proceda *OccurrenceProceda) readOccurrences(originalOcorenSplitLine string
 	proceda.Carrier.Occurrences[ocorenPosition].OccurrenceDate = getInformation(originalOcorenSplitLine, OCCURRENCE_DATE_INIT, OCCURRENCE_DATE_END)
 	proceda.Carrier.Occurrences[ocorenPosition].Text = getInformation(originalOcorenSplitLine, TEXT_INIT, TEXT_END)
 	proceda.Carrier.Occurrences[ocorenPosition].FillerOccurrence = getInformation(originalOcorenSplitLine, FILLER_OCCURRENCE_INIT, FILLER_OCCURRENCE_END)
-	proceda.AmountOccurrences++
+	proceda.OccurrenceFile.AmountOccurrences++
 	return nil
 }
 
@@ -160,7 +165,7 @@ func (proceda *OccurrenceProceda) readRedeployment(originalOcorenSplitLine strin
 	proceda.Carrier.Occurrences[occurrencesPosition].Redeployment[0].ContractingCarrier = getInformation(originalOcorenSplitLine, CONTRACTING_CARRIER_INIT, CONTRACTING_CARRIER_END)
 	proceda.Carrier.Occurrences[occurrencesPosition].Redeployment[0].Series, _ = strconv.Atoi(getInformation(originalOcorenSplitLine, SERIES_CTE_INIT, SERIES_CTE_END))
 	proceda.Carrier.Occurrences[occurrencesPosition].Redeployment[0].Number, _ = strconv.Atoi(getInformation(originalOcorenSplitLine, NUMBER_CTE_INIT, NUMBER_CTE_END))
-	proceda.AmountRedeployment++
+	proceda.OccurrenceFile.AmountRedeployment++
 	return nil
 }
 

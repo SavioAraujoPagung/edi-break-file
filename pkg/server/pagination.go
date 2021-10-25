@@ -17,15 +17,15 @@ func createResponsePaged(writer http.ResponseWriter, request *http.Request, file
 }
 
 func setHead(responceProceda *ocoren.OccurrenceProceda, fileProceda *ocoren.OccurrenceProceda) {
-	responceProceda.ID = fileProceda.ID
-	responceProceda.FileName = fileProceda.FileName
+	responceProceda.OccurrenceFile.ID = fileProceda.OccurrenceFile.ID
+	responceProceda.OccurrenceFile.FileName = fileProceda.OccurrenceFile.FileName
 	responceProceda.HeadFile = fileProceda.HeadFile
 	responceProceda.HeadFileTwo = fileProceda.HeadFileTwo
 	responceProceda.Carrier.CarrierRecordIdentifier = fileProceda.Carrier.CarrierRecordIdentifier
 	responceProceda.Carrier.RegisteredNumberCarrier = fileProceda.Carrier.RegisteredNumberCarrier
 	responceProceda.Carrier.Name = fileProceda.Carrier.Name
-	responceProceda.AmountOccurrences = fileProceda.AmountOccurrences
-	responceProceda.AmountRedeployment = fileProceda.AmountRedeployment
+	responceProceda.OccurrenceFile.AmountOccurrences = fileProceda.OccurrenceFile.AmountOccurrences
+	responceProceda.OccurrenceFile.AmountRedeployment = fileProceda.OccurrenceFile.AmountRedeployment
 }
 
 func setOccurrence(responceProceda *ocoren.OccurrenceProceda,
@@ -35,14 +35,14 @@ func setOccurrence(responceProceda *ocoren.OccurrenceProceda,
 	checkError(err, "Error: read perPage")
 	page, err := strconv.Atoi(request.Header.Get("page"))
 	checkError(err, "Error: read page")
-	if perPage > fileProceda.AmountOccurrences {
-		perPage = fileProceda.AmountOccurrences
+	if perPage > fileProceda.OccurrenceFile.AmountOccurrences {
+		perPage = fileProceda.OccurrenceFile.AmountOccurrences
 	}
 	occurrencesInit := (perPage * page) - perPage
 	occurrencesEnd := occurrencesInit + perPage
 	responceProceda.Carrier.Occurrences = make([]ocoren.Occurrence, 0, perPage)
 	for indexOccurrences := occurrencesInit; indexOccurrences < occurrencesEnd; indexOccurrences++ {
-		if indexOccurrences < fileProceda.AmountOccurrences {
+		if indexOccurrences < fileProceda.OccurrenceFile.AmountOccurrences {
 			responceProceda.Carrier.Occurrences = append(responceProceda.Carrier.Occurrences, fileProceda.Carrier.Occurrences[indexOccurrences])
 		}
 	}
