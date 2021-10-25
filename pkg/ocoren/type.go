@@ -58,7 +58,6 @@ type Redeployment struct {
 	RedeploymentRecordIdentifier int    `json:"identificador" init:"0" end:"3"`
 	RegisteredNumberCte          string `json:"cgc_contratante" init:"3" end:"17"`
 	ContractingCarrier           string `json:"transportadora_contratante" init:"17" end:"27"`
-	AmountOccurrences            int    `json:"quantidade_ocorrencia"`
 	Series                       int    `json:"cte_serie" init:"27" end:"32"`
 	Number                       int    `json:"cte_numero" init:"32" end:"44"`
 }
